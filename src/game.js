@@ -64,7 +64,6 @@ class Game extends React.Component {
     const current = history[stepNumber];
     const gameResult = calculateGameResult(current.squares);
 
-
     const moves = history.map((step, indexMove) => {
       const {col, row} = history[indexMove].move;
 
@@ -78,6 +77,7 @@ class Game extends React.Component {
         jumpTo={() => this.jumpTo(indexMove)}
       />
     });
+    console.log('gameResult', gameResult)
 
     let status;
     if (gameResult && gameResult.winner) {
@@ -133,10 +133,9 @@ const calculateGameResult = squares => {
         winner: squares[a],
         winningLine: [a, b, c],
       };
-    } else{
-      return null;
     }
   }
+  return null;
 }
 
 export default Game;
