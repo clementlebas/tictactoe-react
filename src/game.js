@@ -1,10 +1,12 @@
 import React from 'react';
 
 import Board from './board';
+import Move from './move';
 
 class Game extends React.Component {
   state = {
     history: [{
+      id: '00',
       squares: Array(9).fill(null),
       move: {
         col: null,
@@ -17,7 +19,9 @@ class Game extends React.Component {
   }
 
   handleClick(i, col, row) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const {history: stateHistory, stepNumber, xIsNext} = this.state;
+
+    const history = stateHistory.slice(0, stepNumber + 1);
     const current = history[history.length - 1];
 
     const squares = current.squares.slice();
@@ -25,17 +29,18 @@ class Game extends React.Component {
       return;
     }
 
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    squares[i] = xIsNext ? 'X' : 'O';
 
     this.setState({
       history: history.concat([{
-        squares: squares,
+        id: String(col) + String(row),
+        squares,
         move: {
-          col: col,
-          row: row,
+          col,
+          row,
         },
       }]),
-      xIsNext: !this.state.xIsNext,
+      xIsNext: !xIsNext,
       stepNumber: history.length,
     });
   }
@@ -48,42 +53,37 @@ class Game extends React.Component {
   }
 
   handleToggle = () => {
-    this.setState({isAsc: !this.state.isAsc});
+    const {isAsc} = this.state;
+
+    this.setState({isAsc: !isAsc});
   }
 
   render() {
-    const {history, stepNumber} = this.state;
+    const {history, stepNumber, isAsc, xIsNext} = this.state;
+
     const current = history[stepNumber];
     const gameResult = calculateGameResult(current.squares);
 
+
     const moves = history.map((step, indexMove) => {
-        const {col, row} = history[indexMove].move;
+      const {col, row} = history[indexMove].move;
 
-        const desc = indexMove
-          ? `Go to move # ${indexMove} (${col}, ${row})`
-          : `Go to game start`;
-
-        const style = {
-          fontWeight: indexMove === stepNumber ? 'bold' : 'normal', 
-        };
-
-        return (
-          <li key={indexMove}>
-            <button style={style} onClick={() => this.jumpTo(indexMove)}>{desc}</button>
-            {indexMove === 9 &&
-              !gameResult && (
-                <span className="draw">IT'S A DRAW</span>
-              )
-            }
-          </li>
-        );
-      });
+      return <Move
+        key={indexMove}
+        indexMove={indexMove}
+        col={col}
+        row={row}
+        stepNumber={stepNumber}
+        gameResult={gameResult}
+        jumpTo={() => this.jumpTo(indexMove)}
+      />
+    });
 
     let status;
     if (gameResult && gameResult.winner) {
       status = `GG player ${gameResult.winner}`;
     } else{
-      status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
+      status = `Next player: ${xIsNext ? 'X' : 'O'}`;
     }
 
     return (
@@ -107,7 +107,7 @@ class Game extends React.Component {
               Toggle
             </button>
           </div>
-          <ol>{this.state.isAsc ? moves : moves.slice().reverse()}</ol>
+          <ol>{isAsc ? moves : moves.slice().reverse()}</ol>
         </div>
       </div>
     );
