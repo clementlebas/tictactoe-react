@@ -54,8 +54,22 @@ class Game extends React.Component {
 
   handleToggle = () => {
     const {isAsc} = this.state;
-
     this.setState({isAsc: !isAsc});
+  }
+
+  resetFunction = () => {
+    this.setState({
+      history: [{
+        id: '00',
+        squares: Array(9).fill(null),
+        move: {
+          col: null,
+          row: null,
+        },
+      }],
+      stepNumber: 0,
+      xIsNext: true,
+    })
   }
 
   render() {
@@ -105,6 +119,12 @@ class Game extends React.Component {
               onClick={this.handleToggle}
             >
               Toggle
+            </button>
+            <button 
+              className="reset" 
+              onClick={this.resetFunction}
+            >
+            Reset
             </button>
           </div>
           <ol>{isAsc ? moves : moves.slice().reverse()}</ol>
