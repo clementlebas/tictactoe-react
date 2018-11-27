@@ -4,7 +4,8 @@ import Square from './square';
 
 class Board extends React.Component {
   renderSquare(num, col, row) {
-    const isWinningSquare = this.props.winningLine && this.props.winningLine.includes(num);
+    const {winningLine, squares, onClick} = this.props;
+    const isWinningSquare = winningLine && winningLine.includes(num);
 
     const style = {
       backgroundColor: isWinningSquare && 'green'
@@ -13,9 +14,9 @@ class Board extends React.Component {
     return (
       <Square
         key={num}
-        value={this.props.squares[num]}
+        value={squares[num]}
         css={style}
-        onClick={() => this.props.onClick(num, col, row)}
+        onClick={() => onClick(num, col, row)}
       /> 
     );
   }

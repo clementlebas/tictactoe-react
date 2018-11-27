@@ -74,7 +74,8 @@ class Game extends React.Component {
 
   render() {
     const {history, stepNumber, isAsc, xIsNext} = this.state;
-
+    console.log('this.state', this.state);
+    
     const current = history[stepNumber];
     const gameResult = calculateGameResult(current.squares);
 
@@ -91,7 +92,6 @@ class Game extends React.Component {
         jumpTo={() => this.jumpTo(indexMove)}
       />
     });
-    console.log('gameResult', gameResult)
 
     let status;
     if (gameResult && gameResult.winner) {
